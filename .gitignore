@@ -32,3 +32,7 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+.DS_Store
+on-demand-ec2/modules/network/.terraform.lock.hcl
+on-demand-ec2/ec2/.terraform.lock.hcl
+ec2/.terraform.lock.hcl
