@@ -13,10 +13,12 @@ provider "aws" {
   region  = "ap-southeast-2"
 }
 
-module "network"{
-  source = "../modules/network"
-}
+
 variable "ec2_subnet" {
+  type = string
+}
+
+variable "ec2_sg" {
   type = string
 }
 
@@ -25,12 +27,12 @@ data "aws_ami" "amazon2" {
 
   filter {
     name = "name"
-    values = ["amzn2-ami-*-hvm-*-arm64-gp2"]
+    values = ["amzn2-ami-*-hvm-*-x86_64-gp2"]
   }
 
   filter {
     name = "architecture"
-    values = ["arm64"]
+    values = ["x86_64"]
   }
 
   owners = ["amazon"]
@@ -50,18 +52,20 @@ data "aws_subnet" "controlled_subnet" {
   }
 }
 
-# data "aws_subnet" "subnet" {
-#   for_each = toset(data.aws_subnets.subnets.ids)
-#   id       = each.value
-# }
+data "aws_security_group" "sg" {
+  filter {
+    name   = "tag:Name"
+    values = [var.ec2_sg]
+  }
+}
+
 
 
 resource "aws_instance" "amzn2" {
 
-  depends_on = [module.network.ec2_sg1]
   ami           = data.aws_ami.amazon2.id
   instance_type = "t2.micro"
-  security_groups = [module.network.ec2_sg1.name]
+  security_groups = [data.aws_security_group.sg.id]
   subnet_id = data.aws_subnet.controlled_subnet.id
   tags = {
     Name = "mike-amzn2-${random_id.id.hex}"
