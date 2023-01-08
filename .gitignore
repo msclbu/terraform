@@ -36,3 +36,5 @@ terraform.rc
 on-demand-ec2/modules/network/.terraform.lock.hcl
 on-demand-ec2/ec2/.terraform.lock.hcl
 ec2/.terraform.lock.hcl
+networkbaseline/network/.terraform.lock.hcl
+
