@@ -14,14 +14,6 @@ provider "aws" {
 }
 
 
-variable "ec2_subnet" {
-  type = string
-}
-
-variable "ec2_sg" {
-  type = string
-}
-
 data "aws_ami" "amazon2" {
   most_recent = true
 

@@ -1,3 +1,23 @@
+data "aws_caller_identity" "current" {}
+
+data "aws_vpc" "main_vpc" {
+  filter {
+    name   = "tag:Name"
+    values = ["${data.aws_caller_identity.current.account_id}-VPC"]
+  }
+}
+
+data "aws_subnets" "all_subnets" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.main_vpc.id]
+  }
+}
+
+data "aws_subnet" "all_subnet" {
+  for_each = toset(data.aws_subnets.all_subnets.ids)
+  id       = each.value
+}
 resource "aws_security_group" "standard" {
   name = "mike-sg"
   description = "Standard rules"
